@@ -8,11 +8,11 @@ import com.vaadin.flow.router.BeforeLeaveListener;
 import com.vaadin.flow.router.HasDynamicTitle;
 import edu.prz.bomsystem.foundation.ui.i18n.I18nAware;
 
-public abstract class BasicView extends VerticalLayout implements I18nAware, BeforeEnterObserver,
+public abstract class BaseView extends VerticalLayout implements I18nAware, BeforeEnterObserver,
     BeforeLeaveListener, HasDynamicTitle {
 
 
-  public BasicView() {
+  public BaseView() {
   }
 
   public String getTitle() {
