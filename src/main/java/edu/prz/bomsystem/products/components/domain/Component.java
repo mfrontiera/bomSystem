@@ -9,10 +9,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,9 +37,9 @@ public class Component {
   @NotNull
   String name;
 
-  @OneToMany(mappedBy = "component", cascade = CascadeType.ALL)
+  @OneToOne(mappedBy = "component", cascade = CascadeType.ALL)
   @JsonManagedReference
-  List<ComponentProperty> componentsProperties = new ArrayList<>();
+  private ComponentProperty componentsProperty;
 
   @JsonBackReference
   @ManyToMany(mappedBy = "components")
