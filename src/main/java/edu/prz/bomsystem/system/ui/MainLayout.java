@@ -1,6 +1,7 @@
 package edu.prz.bomsystem.system.ui;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.contextmenu.MenuItem;
@@ -48,7 +49,7 @@ public class MainLayout extends AppLayout implements I18nAware {
   private Component createHeaderContent(){
     Header header = new Header();
     header.addClassNames(BoxSizing.BORDER, Display.FLEX, FlexDirection.COLUMN, Width.FULL);
-    header.add(createStatusBar());
+    header.add(createStatusBar(),createSystemMenu("assemblies", "components"));
     return header;
   }
 
@@ -100,22 +101,28 @@ public class MainLayout extends AppLayout implements I18nAware {
     return layout;
   }
 
-  private Component createSystemMenu(){
+  private Component createSystemMenu(String... localizations) {
     MenuBar menu = new MenuBar();
     menu.setThemeName("tertiary");
 
-    val icon = LineAwesomeIcon.USER_FRIENDS_SOLID.create();
-    icon.getStyle().set("marginRight", "var(--lumo-space-s)");
+    for (String localization : localizations) {
+      MenuItem menuItem = menu.addItem(createMenuIcon());
+      menuItem.add(i18n(localization));
+      menuItem.addClassNames(Display.FLEX, Gap.XSMALL, Height.MEDIUM,
+          AlignItems.CENTER, Padding.Horizontal.SMALL, TextColor.BODY);
 
-    MenuItem assemblies = menu.addItem(icon);
-    assemblies.add(i18n("customers"));
-    assemblies.addClassNames(Display.FLEX, Gap.XSMALL, Height.MEDIUM, AlignItems.CENTER,
-        Padding.Horizontal.SMALL,
-        TextColor.BODY);
+      menuItem.addClickListener(click -> UI.getCurrent().navigate(localization));
+    }
 
-    assemblies.addClickListener(clickEvent -> {
-
-    });
     return menu;
   }
+
+  private Component createMenuIcon() {
+    val icon = LineAwesomeIcon.ADDRESS_CARD.create();
+    icon.getStyle().set("marginRight", "var(--lumo-space-s)");
+    return icon;
+  }
+
+
+
 }

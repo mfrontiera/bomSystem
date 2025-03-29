@@ -13,11 +13,9 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class ComponentProperty {
   private String vendor;
-  private String vendor_id;
+  private String vendorsId;
   private String size;
-  private String certificate;
-  private String material;
   private String params;
-  private String additional_info;
-  private String buy_link;
+  private String additionalInfo;
+  private String buyLink;
 }

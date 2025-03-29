@@ -1,15 +1,13 @@
 package edu.prz.bomsystem.system.ui;
 
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import edu.prz.bomsystem.foundation.ui.view.BaseView;
 import jakarta.annotation.security.PermitAll;
 
-@PageTitle("Start")
-@Route("")
 @PermitAll
-public class StartView extends Div {
+@Route("")
+public class StartView extends BaseView {
 
   public StartView() {
     setSizeFull();
