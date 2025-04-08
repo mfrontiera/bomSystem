@@ -1,6 +1,7 @@
 package edu.prz.bomsystem.products.components.application;
 
 import edu.prz.bomsystem.products.components.domain.Component;
+import edu.prz.bomsystem.products.components.domain.Component.ComponentId;
 import edu.prz.bomsystem.products.components.domain.ComponentProperty;
 import edu.prz.bomsystem.products.components.domain.ComponentRepository;
 import jakarta.transaction.Transactional;
@@ -24,8 +25,8 @@ public class ComponentApplicationService {
   }
 
   @Transactional
-  public Optional<Component> changeComponentData(Long id, ComponentProperty componentProperty){
-    return componentRepository.findById(id)
+  public Optional<Component> changeComponentData(ComponentId id, ComponentProperty componentProperty){
+    return componentRepository.findById(id.getId())
         .map(found -> {
           found.setComponentsProperty(componentProperty);
           return componentRepository.save(found);
@@ -33,8 +34,8 @@ public class ComponentApplicationService {
   }
 
   @Transactional
-  public Optional<Component> removeComponent(Long id){
-    return componentRepository.findById(id)
+  public Optional<Component> removeComponent(ComponentId id){
+    return componentRepository.findById(id.getId())
         .map(found -> {
           componentRepository.delete(found);
           return found;

@@ -10,6 +10,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -57,13 +58,15 @@ public class MainLayout extends AppLayout implements I18nAware {
     Div layout = new Div();
     layout.addClassNames(Display.FLEX, AlignItems.CENTER, Padding.Horizontal.MEDIUM);
 
+    Image logoImage = new Image("images/unabomber.svg","");
+    logoImage.setWidth("50px");
 
     H1 appName = new H1("BOMBER");
     H3 appDescription = new H3("Bill Of Materials Edit and Review");
     VerticalLayout appNameAndDescription = new VerticalLayout(appName,appDescription);
     appNameAndDescription.setSpacing(false);
     appNameAndDescription.addClassNames(Margin.Vertical.MEDIUM, Margin.End.AUTO, "BOMBER");
-    layout.add(appNameAndDescription);
+    layout.add(logoImage,appNameAndDescription);
 
     Optional<User> maybeUser = authenticatedUserService.getUserUsingContext();
     if (maybeUser.isPresent()) {

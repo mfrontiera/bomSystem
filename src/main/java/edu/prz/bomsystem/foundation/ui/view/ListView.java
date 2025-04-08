@@ -7,8 +7,8 @@ import com.vaadin.flow.component.grid.editor.Editor;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.ValidationException;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public abstract class ListView<T> extends BaseView {
@@ -17,14 +17,12 @@ public abstract class ListView<T> extends BaseView {
   protected final Editor<T> editor;
   protected final Binder<T> binder;
   private final Supplier<List<T>> dataProvider;
-  private final Consumer<T> saveFunction;
 
-  protected ListView(Grid<T> grid, Binder<T> binder, Supplier<List<T>> dataProvider,
-      Consumer<T> saveFunction) {
+
+  protected ListView(Grid<T> grid, Binder<T> binder, Supplier<List<T>> dataProvider) {
     this.grid = grid;
     this.binder = binder;
     this.dataProvider = dataProvider;
-    this.saveFunction = saveFunction;
 
     editor = grid.getEditor();
     editor.setBinder(binder);
@@ -50,7 +48,7 @@ public abstract class ListView<T> extends BaseView {
     configureGrid();
     addEditColumn();
   }
-
+  
   protected abstract void configureGrid();
 
   protected void refreshData() {
@@ -80,8 +78,11 @@ public abstract class ListView<T> extends BaseView {
 
     saveButton.addClickListener(click -> {
       T updatedItem = editor.getItem();
-      saveToDatabase(updatedItem);
-      editor.save();
+      try {
+        saveToDatabase(updatedItem);
+      } catch (ValidationException e) {
+        throw new RuntimeException(e);
+      }
       refreshData();
 
     });
@@ -93,8 +94,10 @@ public abstract class ListView<T> extends BaseView {
     return new HorizontalLayout(saveButton, cancelButton);
   }
 
-  protected void saveToDatabase(T item) {
-    saveFunction.accept(item);
+  protected void saveToDatabase(T item) throws ValidationException {
+    binder.writeBean(item);
+    editor.save();
+    editor.closeEditor();
   }
 
 

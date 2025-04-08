@@ -1,9 +1,10 @@
 package edu.prz.bomsystem.products.assemblies.application;
 
 import edu.prz.bomsystem.products.assemblies.domain.Assembly;
+import edu.prz.bomsystem.products.assemblies.domain.Assembly.AssemblyId;
 import edu.prz.bomsystem.products.assemblies.domain.AssemblyRepository;
+import edu.prz.bomsystem.products.components.domain.Component.ComponentId;
 import java.net.URI;
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -48,13 +49,13 @@ public class AssemblyController {
 
   @PostMapping(ID + "/component")
   public ResponseEntity<Assembly> addComponentToAssembly(@PathVariable Long id, @RequestBody addComponentReq request){
-    return ResponseEntity.of(assemblyApplicationService.addComponent(id,request.componentsIdList));
+    return ResponseEntity.of(assemblyApplicationService.addComponent(AssemblyId.of(id),request.componentsId));
   }
 
   public record CreateAssemblyReq(String name) {
   }
 
-  public record addComponentReq(List<Long> componentsIdList){
+  public record addComponentReq(ComponentId componentsId){
 
   }
 }

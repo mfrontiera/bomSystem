@@ -13,8 +13,10 @@ import jakarta.annotation.security.PermitAll;
 @Route("assemblies")
 public class AssembliesListView extends ListView<Assembly> {
 
+
   protected AssembliesListView(AssemblyRepository assemblyRepository) {
-    super(new Grid<>(Assembly.class),new Binder<>(Assembly.class),assemblyRepository::findAll, assemblyRepository::save);
+    super(new Grid<>(Assembly.class),new Binder<>(Assembly.class),assemblyRepository::findAll);
+
   }
 
   @Override
@@ -31,7 +33,6 @@ public class AssembliesListView extends ListView<Assembly> {
     nameColumn.setEditorComponent(nameField);
 
     grid.addColumn(Assembly::getCreateDate).setHeader(i18n("assemblyCreateDate")).setSortable(true);
-
 
 
   }

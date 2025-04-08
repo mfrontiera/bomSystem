@@ -1,8 +1,10 @@
 package edu.prz.bomsystem.products.assemblies.application;
 
 import edu.prz.bomsystem.products.assemblies.domain.Assembly;
+import edu.prz.bomsystem.products.assemblies.domain.Assembly.AssemblyId;
 import edu.prz.bomsystem.products.assemblies.domain.AssemblyRepository;
 import edu.prz.bomsystem.products.components.domain.Component;
+import edu.prz.bomsystem.products.components.domain.Component.ComponentId;
 import edu.prz.bomsystem.products.components.domain.ComponentRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Service
 @RequiredArgsConstructor
@@ -27,18 +30,23 @@ public class AssemblyApplicationService {
   }
 
   @Transactional
-  public Optional<Assembly> addComponent(Long id, List<Long> componentIdList){
-    return assemblyRepository.findById(id)
+  public Optional<Assembly> addComponent(@PathVariable AssemblyId id, @PathVariable ComponentId componentId){
+    return assemblyRepository.findById(id.getId())
         .map(found -> {
-          List<Component> components = componentRepository.findAllById(componentIdList);
-          found.setComponents(components);
-          return assemblyRepository.save(found);
+          List<ComponentId> componentList = found.getComponentIds();
+          Optional<Component> component = componentRepository.findById(componentId.getId());
+          component.map(foundComponent -> {
+            componentList.add(foundComponent.getIdentity());
+            componentRepository.save(foundComponent);
+            return assemblyRepository.save(found);
+          });
+          return found;
         });
   }
 
   @Transactional
-  public Optional<Assembly> removeAssembly(Long id){
-    return assemblyRepository.findById(id)
+  public Optional<Assembly> removeAssembly(AssemblyId id){
+    return assemblyRepository.findById(id.getId())
         .map(found -> {
           assemblyRepository.delete(found);
           return found;

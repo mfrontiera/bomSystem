@@ -1,6 +1,7 @@
 package edu.prz.bomsystem.products.components.application;
 
 import edu.prz.bomsystem.products.components.domain.Component;
+import edu.prz.bomsystem.products.components.domain.Component.ComponentId;
 import edu.prz.bomsystem.products.components.domain.ComponentProperty;
 import edu.prz.bomsystem.products.components.domain.ComponentRepository;
 import java.net.URI;
@@ -37,8 +38,8 @@ public class ComponentController {
   }
 
   @GetMapping(ID)
-  public ResponseEntity<Component> getOne(@PathVariable Long id){
-    return ResponseEntity.of(componentRepository.findById(id));
+  public ResponseEntity<Component> getOne(@PathVariable ComponentId id){
+    return ResponseEntity.of(componentRepository.findById(id.getId()));
   }
 
   @PostMapping
@@ -49,12 +50,12 @@ public class ComponentController {
   }
 
   @PutMapping
-  public ResponseEntity<Component> changeComponentData(@PathVariable Long id, @RequestBody ChangeComponentDataReq request ){
+  public ResponseEntity<Component> changeComponentData(@PathVariable ComponentId id, @RequestBody ChangeComponentDataReq request ){
     return ResponseEntity.of(componentApplicationService.changeComponentData(id,request.componentProperty));
   }
 
   @DeleteMapping(ID)
-  public ResponseEntity<Component> removeComponent(@PathVariable Long id){
+  public ResponseEntity<Component> removeComponent(@PathVariable ComponentId id){
     return ResponseEntity.of(componentApplicationService.removeComponent(id));
   }
   public record CreateComponentReq(String name, ComponentProperty componentProperty){

@@ -16,7 +16,7 @@ public class ComponentsListView extends ListView<Component> {
 
   @Autowired
   public ComponentsListView(ComponentRepository componentRepository){
-    super(new Grid<>(Component.class),new Binder<>(Component.class), componentRepository::findAll, componentRepository::save);
+    super(new Grid<>(Component.class),new Binder<>(Component.class), componentRepository::findAll);
   }
 
   @Override

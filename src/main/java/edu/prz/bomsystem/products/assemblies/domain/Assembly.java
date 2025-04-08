@@ -1,14 +1,15 @@
 package edu.prz.bomsystem.products.assemblies.domain;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import edu.prz.bomsystem.products.components.domain.Component;
+import edu.prz.bomsystem.foundation.domain.BaseEntity;
+import edu.prz.bomsystem.foundation.domain.Identity;
+import edu.prz.bomsystem.products.components.domain.Component.ComponentId;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
@@ -16,34 +17,51 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "assemblies")
-@Builder
 @Data
-@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+@Builder
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id")
-public class Assembly {
+public class Assembly extends BaseEntity<Long> {
 
-  @Getter
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  public Assembly(){}
+  @Embeddable
+  @NoArgsConstructor
+  @EqualsAndHashCode(callSuper = true)
+  public static class AssemblyId extends Identity<Long> {
+
+    private AssemblyId(Long id) {
+      super(id);
+    }
+
+    public static AssemblyId of(Long id) {
+      return new AssemblyId(id);
+    }
+
+    public static AssemblyId of(String txt) {
+      return new AssemblyId(Long.valueOf(txt));
+    }
+
+  }
+
+  public AssemblyId getIdentity() {
+    return AssemblyId.of(id);
+  }
 
   private String name;
 
   @Builder.Default
   private LocalDate createDate = LocalDate.now();
 
-  @JsonManagedReference
-  @ManyToMany
-  @JoinTable(
-      name = "assembly_component",
-      joinColumns = @JoinColumn(name = "assembly_id"),
-      inverseJoinColumns = @JoinColumn(name = "component_id")
-  )
-  private List<Component> components;
+  /*@AttributeOverride(name = "id", column = @Column(name = "component_id"))
+  private ComponentId ComponentId;
+*/
+  @ElementCollection(fetch = FetchType.EAGER)
+  @CollectionTable(name = "assembly_components", joinColumns = @JoinColumn(name = "assembly_id"))
+  @Column(name = "component_id")
+  private List<ComponentId> componentIds;
+
 }
