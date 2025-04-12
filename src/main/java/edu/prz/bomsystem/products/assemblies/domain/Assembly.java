@@ -2,14 +2,13 @@ package edu.prz.bomsystem.products.assemblies.domain;
 
 import edu.prz.bomsystem.foundation.domain.BaseEntity;
 import edu.prz.bomsystem.foundation.domain.Identity;
-import edu.prz.bomsystem.products.components.domain.Component.ComponentId;
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
+import edu.prz.bomsystem.products.assemblycomponent.domain.AssemblyComponent;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import java.util.List;
@@ -27,7 +26,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Assembly extends BaseEntity<Long> {
 
-  public Assembly(){}
+  public Assembly() {
+  }
+
   @Embeddable
   @NoArgsConstructor
   @EqualsAndHashCode(callSuper = true)
@@ -56,12 +57,9 @@ public class Assembly extends BaseEntity<Long> {
   @Builder.Default
   private LocalDate createDate = LocalDate.now();
 
-  /*@AttributeOverride(name = "id", column = @Column(name = "component_id"))
-  private ComponentId ComponentId;
-*/
-  @ElementCollection(fetch = FetchType.EAGER)
-  @CollectionTable(name = "assembly_components", joinColumns = @JoinColumn(name = "assembly_id"))
-  @Column(name = "component_id")
-  private List<ComponentId> componentIds;
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+      @JoinColumn(name = "assembly_id")
+  List<AssemblyComponent> assemblyComponents;
+
 
 }

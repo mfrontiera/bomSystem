@@ -33,7 +33,6 @@ public class AssembliesListView extends ListView<Assembly> {
     nameColumn.setEditorComponent(nameField);
 
     grid.addColumn(Assembly::getCreateDate).setHeader(i18n("assemblyCreateDate")).setSortable(true);
-
-
   }
+
 }

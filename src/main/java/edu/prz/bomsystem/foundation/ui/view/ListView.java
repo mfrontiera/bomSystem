@@ -53,6 +53,7 @@ public abstract class ListView<T> extends BaseView {
 
   protected void refreshData() {
     grid.setItems(dataProvider.get());
+
   }
 
   protected void addEditColumn() {

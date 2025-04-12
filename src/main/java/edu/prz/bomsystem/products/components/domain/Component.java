@@ -51,5 +51,8 @@ public class Component extends BaseEntity<Long> {
   @Embedded
   private ComponentProperty componentsProperty;
 
+  /*@OneToMany(mappedBy = "component")
+  private Set<AssemblyComponent> assemblyComponents;
+*/
 
 }
