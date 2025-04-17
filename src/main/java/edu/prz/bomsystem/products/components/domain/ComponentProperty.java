@@ -1,21 +1,53 @@
 package edu.prz.bomsystem.products.components.domain;
 
+import edu.prz.bomsystem.foundation.domain.BaseEntity;
+import edu.prz.bomsystem.foundation.domain.Identity;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Lob;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+@Entity
+@Table(name = "components_property")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Embeddable
-public class ComponentProperty {
-  private String vendor;
-  private String vendorsId;
-  private String size;
-  private String params;
-  private String additionalInfo;
-  private String buyLink;
+@EqualsAndHashCode(callSuper = true)
+public class ComponentProperty extends BaseEntity<Long> {
+
+  @Embeddable
+  @NoArgsConstructor
+  @EqualsAndHashCode(callSuper = true)
+  public static class ComponentPropertyId extends Identity<Long> {
+
+    private ComponentPropertyId(Long id) {
+      super(id);
+    }
+
+    public static ComponentProperty.ComponentPropertyId of(Long id) {
+      return new ComponentProperty.ComponentPropertyId(id);
+    }
+
+    public static ComponentProperty.ComponentPropertyId of(String txt) {
+      return new ComponentProperty.ComponentPropertyId(Long.valueOf(txt));
+    }
+
+  }
+
+  public ComponentProperty.ComponentPropertyId getIdentity() {
+    return ComponentProperty.ComponentPropertyId.of(id);
+  }
+
+
+  @Lob
+  String description;
+  String buyLink;
+
+
 }

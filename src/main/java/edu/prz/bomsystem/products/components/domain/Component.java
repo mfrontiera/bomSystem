@@ -2,9 +2,12 @@ package edu.prz.bomsystem.products.components.domain;
 
 import edu.prz.bomsystem.foundation.domain.BaseEntity;
 import edu.prz.bomsystem.foundation.domain.Identity;
+import edu.prz.bomsystem.products.components.domain.ComponentProperty.ComponentPropertyId;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -45,14 +48,15 @@ public class Component extends BaseEntity<Long> {
     return ComponentId.of(id);
   }
 
+  @Lob
+  @Column(length = 1_000_000)
+  byte[] componentPicture;
+
   @NotNull
   String name;
+  String partNumber;
 
-  @Embedded
-  private ComponentProperty componentsProperty;
-
-  /*@OneToMany(mappedBy = "component")
-  private Set<AssemblyComponent> assemblyComponents;
-*/
+  @AttributeOverride(name = "id", column = @Column(name = "components_property_id"))
+  ComponentPropertyId componentProperty;
 
 }

@@ -2,7 +2,7 @@ package edu.prz.bomsystem.products.components.application;
 
 import edu.prz.bomsystem.products.components.domain.Component;
 import edu.prz.bomsystem.products.components.domain.Component.ComponentId;
-import edu.prz.bomsystem.products.components.domain.ComponentProperty;
+import edu.prz.bomsystem.products.components.domain.ComponentProperty.ComponentPropertyId;
 import edu.prz.bomsystem.products.components.domain.ComponentRepository;
 import java.net.URI;
 import org.springframework.data.domain.Page;
@@ -58,10 +58,10 @@ public class ComponentController {
   public ResponseEntity<Component> removeComponent(@PathVariable ComponentId id){
     return ResponseEntity.of(componentApplicationService.removeComponent(id));
   }
-  public record CreateComponentReq(String name, ComponentProperty componentProperty){
+  public record CreateComponentReq(String name, ComponentPropertyId componentProperty){
   }
 
-  public record ChangeComponentDataReq(ComponentProperty componentProperty){
+  public record ChangeComponentDataReq(ComponentPropertyId componentProperty){
 
   }
 }

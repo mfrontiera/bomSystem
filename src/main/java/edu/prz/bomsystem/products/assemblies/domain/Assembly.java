@@ -7,7 +7,6 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
@@ -57,8 +56,7 @@ public class Assembly extends BaseEntity<Long> {
   @Builder.Default
   private LocalDate createDate = LocalDate.now();
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-      @JoinColumn(name = "assembly_id")
+  @OneToMany(mappedBy = "assembly", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
   List<AssemblyComponent> assemblyComponents;
 
 

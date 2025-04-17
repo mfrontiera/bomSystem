@@ -1,6 +1,7 @@
 package edu.prz.bomsystem.foundation.ui.view;
 
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
@@ -11,20 +12,27 @@ import java.util.List;
 public abstract class DetailedGridView<T, D> extends BaseView {
 
   protected final Grid<T> mainGrid;
+  protected final List<T> mainItemList;
+  protected final Button deleteButton;
 
-  @SuppressWarnings("unchecked")
-  public DetailedGridView(List<T> items) {
-    this.mainGrid = new Grid<>((Class<T>) items.getFirst().getClass(), false);
-    this.mainGrid.setItems(items);
+  public DetailedGridView(Grid<T> mainGrid, List<T> mainItemList, Button deleteButton) {
+    this.mainGrid = mainGrid;
+    this.mainItemList = mainItemList;
+    this.deleteButton = deleteButton;
 
+    deleteButton.setEnabled(false);
+    deleteButton.setDisableOnClick(true);
+    deleteButton.setText(i18n("deleteButton"));
     setupMainGrid();
-    add(mainGrid);
+    add(mainGrid,createAddMoreButton());
   }
 
   protected void setupMainGrid() {
+    mainGrid.setItems(mainItemList);
+
     setupMainGridColumns(mainGrid);
 
-    mainGrid.addColumn(createToggleDetailsRenderer(mainGrid)).setWidth("80px")
+    mainGrid.addColumn(createToggleDetailsRenderer(mainGrid)).setAutoWidth(true)
         .setFlexGrow(0).setFrozen(true).setHeader(createDeleteButton());
     mainGrid.setSelectionMode(Grid.SelectionMode.MULTI);
     mainGrid.addThemeVariants(GridVariant.LUMO_ROW_STRIPES);
@@ -32,7 +40,14 @@ public abstract class DetailedGridView<T, D> extends BaseView {
     mainGrid.setItemDetailsRenderer(new ComponentRenderer<>(this::createDetailComponent));
     mainGrid.setDetailsVisibleOnClick(true);
     mainGrid.setAllRowsVisible(true);
+
+    mainGrid.addSelectionListener(selectionEvent -> {
+      if(!mainGrid.getSelectedItems().isEmpty()){
+        deleteButton.setEnabled(true);
+      }
+    });
   }
+  protected abstract Button createAddMoreButton();
 
   protected abstract void setupMainGridColumns(Grid<T> grid);
 
