@@ -2,9 +2,10 @@ package edu.prz.bomsystem.products.components.application;
 
 import edu.prz.bomsystem.products.components.domain.Component;
 import edu.prz.bomsystem.products.components.domain.Component.ComponentId;
-import edu.prz.bomsystem.products.components.domain.ComponentProperty.ComponentPropertyId;
+import edu.prz.bomsystem.products.components.domain.ComponentProperty;
 import edu.prz.bomsystem.products.components.domain.ComponentRepository;
 import java.net.URI;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -46,22 +47,22 @@ public class ComponentController {
   public ResponseEntity<Component> createComponent(@RequestBody CreateComponentReq request){
     return ResponseEntity
         .created(URI.create(""))
-        .body(componentApplicationService.createComponent(request.name(), request.componentProperty));
+        .body(componentApplicationService.createComponent(request.name(), request.componentPropertyList));
   }
 
   @PutMapping
   public ResponseEntity<Component> changeComponentData(@PathVariable ComponentId id, @RequestBody ChangeComponentDataReq request ){
-    return ResponseEntity.of(componentApplicationService.changeComponentData(id,request.componentProperty));
+    return ResponseEntity.of(componentApplicationService.changeComponentData(id,request.componentPropertyList));
   }
 
   @DeleteMapping(ID)
   public ResponseEntity<Component> removeComponent(@PathVariable ComponentId id){
     return ResponseEntity.of(componentApplicationService.removeComponent(id));
   }
-  public record CreateComponentReq(String name, ComponentPropertyId componentProperty){
+  public record CreateComponentReq(String name, List<ComponentProperty> componentPropertyList){
   }
 
-  public record ChangeComponentDataReq(ComponentPropertyId componentProperty){
+  public record ChangeComponentDataReq(List<ComponentProperty> componentPropertyList){
 
   }
 }

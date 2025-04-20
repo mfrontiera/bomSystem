@@ -2,14 +2,17 @@ package edu.prz.bomsystem.products.components.domain;
 
 import edu.prz.bomsystem.foundation.domain.BaseEntity;
 import edu.prz.bomsystem.foundation.domain.Identity;
-import edu.prz.bomsystem.products.components.domain.ComponentProperty.ComponentPropertyId;
-import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Lob;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -56,7 +59,11 @@ public class Component extends BaseEntity<Long> {
   String name;
   String partNumber;
 
-  @AttributeOverride(name = "id", column = @Column(name = "components_property_id"))
-  ComponentPropertyId componentProperty;
+  @OneToMany(mappedBy = "component", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+  List<ComponentProperty> componentProperties = new ArrayList<>();
+
+  public void addProperty(ComponentProperty componentProperty){
+    this.componentProperties.add(componentProperty);
+  }
 
 }

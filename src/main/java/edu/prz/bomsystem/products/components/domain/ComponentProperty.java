@@ -2,6 +2,8 @@ package edu.prz.bomsystem.products.components.domain;
 
 import edu.prz.bomsystem.foundation.domain.BaseEntity;
 import edu.prz.bomsystem.foundation.domain.Identity;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Lob;
@@ -13,7 +15,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "components_property")
+@Table(name = "component_properties")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -44,6 +46,8 @@ public class ComponentProperty extends BaseEntity<Long> {
     return ComponentProperty.ComponentPropertyId.of(id);
   }
 
+  @AttributeOverride(name = "id", column = @Column(name = "component_id"))
+  Component.ComponentId component;
 
   @Lob
   String description;
