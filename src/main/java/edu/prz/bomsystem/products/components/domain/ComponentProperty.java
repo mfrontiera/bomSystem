@@ -1,18 +1,21 @@
 package edu.prz.bomsystem.products.components.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.prz.bomsystem.foundation.domain.BaseEntity;
 import edu.prz.bomsystem.foundation.domain.Identity;
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "component_properties")
@@ -46,12 +49,21 @@ public class ComponentProperty extends BaseEntity<Long> {
     return ComponentProperty.ComponentPropertyId.of(id);
   }
 
-  @AttributeOverride(name = "id", column = @Column(name = "component_id"))
-  Component.ComponentId component;
+  @ManyToOne
+  @JoinColumn(name = "component_id")
+  @ToString.Exclude
+  @JsonIgnore
+  Component component;
 
   @Lob
   String description;
   String buyLink;
 
+  @PreRemove
+  public void preRemove() {
+    if (component != null) {
+      component.getComponentProperties().remove(this);
+    }
+  }
 
 }

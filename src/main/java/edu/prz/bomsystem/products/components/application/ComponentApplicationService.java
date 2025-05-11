@@ -3,6 +3,7 @@ package edu.prz.bomsystem.products.components.application;
 import edu.prz.bomsystem.products.components.domain.Component;
 import edu.prz.bomsystem.products.components.domain.Component.ComponentId;
 import edu.prz.bomsystem.products.components.domain.ComponentProperty;
+import edu.prz.bomsystem.products.components.domain.ComponentPropertyRepository;
 import edu.prz.bomsystem.products.components.domain.ComponentRepository;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class ComponentApplicationService {
 
   final ComponentRepository componentRepository;
+  private final ComponentPropertyRepository componentPropertyRepository;
 
   @Transactional
   public Component createComponent(String name, List<ComponentProperty> componentPropertyList) {
@@ -50,5 +52,10 @@ public class ComponentApplicationService {
           componentRepository.delete(found);
           return found;
         });
+  }
+
+  public Optional<List<ComponentProperty>> getComponentProperties(ComponentId id){
+    return componentRepository.findById(id.getId())
+        .map(Component::getComponentProperties);
   }
 }

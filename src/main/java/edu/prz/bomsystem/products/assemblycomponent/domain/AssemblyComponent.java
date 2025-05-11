@@ -59,6 +59,7 @@ public class AssemblyComponent extends BaseEntity<Long> {
   private ComponentId component;
 
   int quantity;
+  boolean isBought;
 
   public void addToQuantity(int amount){
     this.quantity = quantity + amount;

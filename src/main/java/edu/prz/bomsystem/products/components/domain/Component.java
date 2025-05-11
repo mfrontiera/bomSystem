@@ -1,5 +1,6 @@
 package edu.prz.bomsystem.products.components.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import edu.prz.bomsystem.foundation.domain.BaseEntity;
 import edu.prz.bomsystem.foundation.domain.Identity;
 import jakarta.persistence.CascadeType;
@@ -18,6 +19,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "components")
@@ -37,18 +39,18 @@ public class Component extends BaseEntity<Long> {
       super(id);
     }
 
-    public static ComponentId of(Long id) {
-      return new ComponentId(id);
+    public static Component.ComponentId of(Long id) {
+      return new Component.ComponentId(id);
     }
 
-    public static ComponentId of(String txt) {
-      return new ComponentId(Long.valueOf(txt));
+    public static Component.ComponentId of(String txt) {
+      return new Component.ComponentId(Long.valueOf(txt));
     }
 
   }
 
-  public ComponentId getIdentity() {
-    return ComponentId.of(id);
+  public Component.ComponentId getIdentity() {
+    return Component.ComponentId.of(id);
   }
 
   @Lob
@@ -60,6 +62,8 @@ public class Component extends BaseEntity<Long> {
   String partNumber;
 
   @OneToMany(mappedBy = "component", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+  @ToString.Exclude
+  @JsonIgnore
   List<ComponentProperty> componentProperties = new ArrayList<>();
 
   public void addProperty(ComponentProperty componentProperty){
