@@ -13,7 +13,7 @@ public class Application implements AppShellConfigurator {
     //private static final Logger log = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) {
-        System.setProperty("spring.devtools.restart.enabled", "true");
+        System.setProperty("spring.devtools.restart.enabled", "false");
         SpringApplication.run(Application.class, args);
     }
 

@@ -4,6 +4,7 @@ import edu.prz.bomsystem.component.domain.Component;
 import edu.prz.bomsystem.component.domain.Component.ComponentId;
 import edu.prz.bomsystem.component.domain.ComponentRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.stereotype.Service;
@@ -22,24 +23,36 @@ public class ComponentService {
   }
 
   @Transactional
-  public void assignParentToComponent(ComponentId parentId, ComponentId childId) {
+  public Optional<Component> assignParentToComponent(ComponentId parentId, ComponentId childId) {
     Component parent = componentRepository.findById(parentId.getId())
         .orElseThrow(() -> new EntityNotFoundException("Parent component not found: " + parentId));
 
-    Component child = componentRepository.findById(childId.getId())
-        .orElseThrow(() -> new EntityNotFoundException("Child component not found: " + childId));
+    return componentRepository.findById(childId.getId())
+            .map(found -> {
+              if (parent.getIdentity().equals(found.getIdentity())) {
+                throw new IllegalArgumentException("Component cannot be its own parent");
+              }
 
-    if (parent.getIdentity().equals(child.getIdentity())) {
-      throw new IllegalArgumentException("Component cannot be its own parent");
-    }
-
-    child.setParent(parent);
-    componentRepository.save(child);
+              found.setParent(parent);
+              return componentRepository.save(found);
+            });
   }
 
   @Transactional
-  public void deleteComponent(ComponentId componentId){
-    componentRepository.deleteById(componentId.getId());
+  public Optional<Component> editComponent(ComponentId componentId, String name){
+    return componentRepository.findById(componentId.getId())
+        .map(found -> {
+          found.setName(name);
+          return componentRepository.save(found);
+        });
+  }
+  @Transactional
+  public Optional<Component> deleteComponent(ComponentId componentId){
+    return componentRepository.findById(componentId.getId())
+        .map(found -> {
+          componentRepository.delete(found);
+          return componentRepository.save(found);
+        });
   }
 
 }

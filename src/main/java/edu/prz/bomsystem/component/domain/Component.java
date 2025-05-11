@@ -15,15 +15,20 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.envers.AuditTable;
+import org.hibernate.envers.Audited;
 
 @Entity
 @Table(name = "components")
+@Audited
+@AuditTable(value = "components_audit")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Component extends BaseEntity<Long> {
+
 
   @Embeddable
   @NoArgsConstructor
@@ -45,9 +50,11 @@ public class Component extends BaseEntity<Long> {
 
   }
 
+
   public ComponentId getIdentity() {
     return ComponentId.of(id);
   }
+
 
   @NotNull
   String catalogId;

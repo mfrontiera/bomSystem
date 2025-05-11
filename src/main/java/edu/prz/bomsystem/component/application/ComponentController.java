@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,7 +42,13 @@ public class ComponentController {
         .body(componentService.createComponent(request.catalogId));
   }
 
+  @PutMapping(ID + "/parent")
+  public ResponseEntity<Component> setComponentParent(@PathVariable ComponentId id, @RequestBody assignParentReq request){
+    return ResponseEntity.of(componentService.assignParentToComponent(request.parentId,id));
+  }
+
   public record createComponentReq(String catalogId) {
   }
 
+  public record assignParentReq(ComponentId parentId){}
 }
