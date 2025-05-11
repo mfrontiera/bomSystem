@@ -50,7 +50,7 @@ public class MainLayout extends AppLayout implements I18nAware {
   private Component createHeaderContent(){
     Header header = new Header();
     header.addClassNames(BoxSizing.BORDER, Display.FLEX, FlexDirection.COLUMN, Width.FULL);
-    header.add(createStatusBar(),createSystemMenu("assemblies_detail", "components"));
+    header.add(createStatusBar());
     return header;
   }
 
