@@ -29,6 +29,16 @@ public class SecurityConfiguration extends VaadinWebSecurity {
             new AntPathRequestMatcher("/line-awesome/**/*.svg")
         ).permitAll());
 
+    http.formLogin(form -> form
+        .loginPage("/login")
+        .defaultSuccessUrl("/", true)
+        .permitAll()
+    );
+
+    http.logout(logout -> logout
+        .logoutSuccessUrl("/login?logout")
+    );
+
     super.configure(http);
     setLoginView(http, LoginView.class);
   }
