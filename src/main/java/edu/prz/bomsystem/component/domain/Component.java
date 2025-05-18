@@ -2,6 +2,7 @@ package edu.prz.bomsystem.component.domain;
 
 import edu.prz.bomsystem.foundation.domain.BaseEntity;
 import edu.prz.bomsystem.foundation.domain.Identity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -15,8 +16,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.envers.AuditTable;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 @Entity
 @Table(name = "components")
@@ -55,21 +58,28 @@ public class Component extends BaseEntity<Long> {
     return ComponentId.of(id);
   }
 
-
+  @Column(unique = true)
   @NotNull
   String catalogId;
-  String name;
+
+  @Builder.Default
+  @ColumnDefault("'NewComponent'")
+  String name = "NewComponent";
 
   @Lob
   String description;
 
   String type;
   String unitMeasureType;
-  String status;
+
+  @Builder.Default
+  @ColumnDefault("'Pending'")
+  String status = "Pending";
 
   int costPerUnit;
   int stockQuantity;
 
+  @NotAudited
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "parent_id")
   private Component parent;
