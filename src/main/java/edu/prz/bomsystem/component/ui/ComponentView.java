@@ -1,7 +1,5 @@
 package edu.prz.bomsystem.component.ui;
 
-import static java.lang.Math.abs;
-
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -13,7 +11,7 @@ import edu.prz.bomsystem.component.domain.Component;
 import edu.prz.bomsystem.component.domain.ComponentRepository;
 import edu.prz.bomsystem.foundation.ui.view.VersionedGridView;
 import jakarta.annotation.security.PermitAll;
-import java.util.Random;
+import org.apache.commons.math3.random.RandomDataGenerator;
 import org.springframework.data.domain.PageRequest;
 
 @PermitAll
@@ -46,7 +44,7 @@ public class ComponentView extends VersionedGridView<Component> {
 
   private void setupLayout(){
     addNewButton(
-        unused -> componentService.createComponent("DD" + abs(new Random().nextLong()))
+        unused -> componentService.createComponent("DD" + new RandomDataGenerator().nextLong(0, 10000))
     );
   }
 
