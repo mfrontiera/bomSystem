@@ -60,7 +60,7 @@ public class ComponentView extends BasicGridView<Component> {
     nameField.setWidthFull();
     binder.forField(nameField).bind(Component::getName, Component::setName);
     grid.addColumn(Component::getName).setHeader(i18n("name")).setAutoWidth(true)
-        .setEditorComponent(nameField);
+        .setEditorComponent(nameField).setSortable(true);;
 
     TextArea descriptionField = new TextArea();
     descriptionField.setWidthFull();
@@ -72,7 +72,7 @@ public class ComponentView extends BasicGridView<Component> {
     });
     binder.forField(descriptionField).bind(Component::getDescription, Component::setDescription);
     grid.addColumn(Component::getDescription).setHeader(i18n("description")).setAutoWidth(true)
-        .setEditorComponent(descriptionField);
+        .setEditorComponent(descriptionField).setSortable(true);;
 
     TextField typeField = new TextField();
     typeField.setWidthFull();
@@ -81,7 +81,7 @@ public class ComponentView extends BasicGridView<Component> {
     grid.addColumn(Component::getType)
         .setHeader(i18n("type"))
         .setAutoWidth(true)
-        .setEditorComponent(typeField);
+        .setEditorComponent(typeField).setSortable(true);;
 
     TextField unitMeasureField = new TextField();
     unitMeasureField.setWidthFull();
@@ -90,7 +90,7 @@ public class ComponentView extends BasicGridView<Component> {
     grid.addColumn(Component::getUnitMeasureType)
         .setHeader(i18n("measure"))
         .setAutoWidth(true)
-        .setEditorComponent(unitMeasureField);
+        .setEditorComponent(unitMeasureField).setSortable(true);;
 
     IntegerField costField = new IntegerField();
     costField.setWidthFull();
@@ -99,7 +99,7 @@ public class ComponentView extends BasicGridView<Component> {
     grid.addColumn(Component::getCostPerUnit)
         .setHeader(i18n("cost"))
         .setAutoWidth(true)
-        .setEditorComponent(costField);
+        .setEditorComponent(costField).setSortable(true);;
 
     IntegerField quantityField = new IntegerField();
     quantityField.setWidthFull();
@@ -108,9 +108,7 @@ public class ComponentView extends BasicGridView<Component> {
     grid.addColumn(Component::getStockQuantity)
         .setHeader(i18n("quantity"))
         .setAutoWidth(true)
-        .setEditorComponent(quantityField);
-
-    addStatusColumn(Component::getStatus);
+        .setEditorComponent(quantityField).setSortable(true);;
   }
 
 
