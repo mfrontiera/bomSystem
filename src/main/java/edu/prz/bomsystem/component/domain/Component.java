@@ -5,10 +5,7 @@ import edu.prz.bomsystem.foundation.domain.Identity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -17,14 +14,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.envers.AuditTable;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
 
 @Entity
 @Table(name = "components")
-@Audited
-@AuditTable(value = "components_audit")
 @Data
 @EqualsAndHashCode(callSuper = true)
 @Builder
@@ -78,9 +70,4 @@ public class Component extends BaseEntity<Long> {
 
   int costPerUnit;
   int stockQuantity;
-
-  @NotAudited
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "parent_id")
-  private Component parent;
 }

@@ -16,13 +16,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.envers.AuditTable;
-import org.hibernate.envers.Audited;
 
 @Entity
 @Table(name = "module_components")
-@Audited
-@AuditTable(value = "modules_components_audit")
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @Builder

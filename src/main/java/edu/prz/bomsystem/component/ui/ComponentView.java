@@ -1,80 +1,121 @@
 package edu.prz.bomsystem.component.ui;
 
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.icon.Icon;
-import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.data.provider.CallbackDataProvider;
+import com.vaadin.flow.component.textfield.IntegerField;
+import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
-import edu.prz.bomsystem.component.application.ComponentAuditService;
 import edu.prz.bomsystem.component.application.ComponentService;
 import edu.prz.bomsystem.component.domain.Component;
 import edu.prz.bomsystem.component.domain.ComponentRepository;
-import edu.prz.bomsystem.foundation.ui.view.VersionedGridView;
+import edu.prz.bomsystem.foundation.ui.view.BasicGridView;
 import jakarta.annotation.security.PermitAll;
 import org.apache.commons.math3.random.RandomDataGenerator;
-import org.springframework.data.domain.PageRequest;
 
 @PermitAll
 @Route("components")
-public class ComponentView extends VersionedGridView<Component> {
+public class ComponentView extends BasicGridView<Component> {
 
   private final ComponentRepository componentRepository;
   private final ComponentService componentService;
-  private final ComponentAuditService componentAuditService;
 
 
-  public ComponentView(ComponentRepository componentRepository, ComponentService componentService,
-      ComponentAuditService componentAuditService) {
-    super(new Grid<>(Component.class, false),
-        new CallbackDataProvider<Component, Void>(
-            query -> {
-              int offset = query.getOffset();
-              int limit = query.getLimit();
-              return componentRepository.findAll(PageRequest.of(offset / limit, limit)).stream();
-            },
-            query -> (int) componentRepository.count()
-        ));
+  public ComponentView(ComponentRepository componentRepository, ComponentService componentService) {
+    super(new Grid<>(Component.class, false), componentRepository.findAll(),
+        new Binder<>(Component.class));
 
     this.componentRepository = componentRepository;
     this.componentService = componentService;
-    this.componentAuditService = componentAuditService;
 
     setupLayout();
+    setGridColumns();
+    addEditActionColumn(componentRepository::save);
   }
 
-  private void setupLayout(){
+  private void setupLayout() {
     addNewButton(
-        unused -> componentService.createComponent("DD" + new RandomDataGenerator().nextLong(0, 10000))
+        unused -> componentService.createComponent(
+            "DD" + new RandomDataGenerator().nextLong(0, 10000))
     );
+
+    addDeleteRecordsButton(recordsToDelete -> {
+      componentRepository.deleteAll();
+      return null;
+    });
+
+    configureSearch(component -> {
+      String term = searchField.getValue().trim().toLowerCase();
+      return matches(component.getName(), term) || matches(component.getCatalogId(), term)
+          || matches(component.getType(), term);
+    });
   }
 
   @Override
   protected void setGridColumns() {
-    addVersionColumn(
-        component -> componentAuditService.getComponentVersions(component.getIdentity()).size(),
-        (component, revision) -> componentAuditService.getComponentFromVersion(
-            component.getIdentity(), revision),
-        component -> component.getIdentity().getId()
-    );
-
     grid.addColumn(Component::getCatalogId).setHeader(i18n("catalogId"));
-    grid.addColumn(Component::getName).setHeader(i18n("name")).setAutoWidth(true);
-    grid.addColumn(Component::getDescription).setHeader(i18n("description")).setAutoWidth(true);
-    grid.addColumn(Component::getType).setHeader(i18n("type")).setAutoWidth(true);
-    grid.addColumn(Component::getUnitMeasureType).setHeader(i18n("measure")).setAutoWidth(true);
-    grid.addColumn(Component::getCostPerUnit).setHeader(i18n("cost")).setAutoWidth(true);
-    grid.addComponentColumn(component -> createStatusIcon(component.getStatus()))
-        .setTooltipGenerator(
-            Component::getStatus).setHeader(i18n("status")).setAutoWidth(false);
+
+    TextField nameField = new TextField();
+    nameField.setWidthFull();
+    binder.forField(nameField).bind(Component::getName, Component::setName);
+    grid.addColumn(Component::getName).setHeader(i18n("name")).setAutoWidth(true)
+        .setEditorComponent(nameField);
+
+    TextArea descriptionField = new TextArea();
+    descriptionField.setWidthFull();
+    descriptionField.setMaxLength(150);
+    descriptionField.setValueChangeMode(ValueChangeMode.EAGER);
+    descriptionField.addValueChangeListener(e -> {
+      e.getSource()
+          .setHelperText(e.getValue().length() + "/" + 150);
+    });
+    binder.forField(descriptionField).bind(Component::getDescription, Component::setDescription);
+    grid.addColumn(Component::getDescription).setHeader(i18n("description")).setAutoWidth(true)
+        .setEditorComponent(descriptionField);
+
+    TextField typeField = new TextField();
+    typeField.setWidthFull();
+    binder.forField(typeField)
+        .bind(Component::getType, Component::setType);
+    grid.addColumn(Component::getType)
+        .setHeader(i18n("type"))
+        .setAutoWidth(true)
+        .setEditorComponent(typeField);
+
+    TextField unitMeasureField = new TextField();
+    unitMeasureField.setWidthFull();
+    binder.forField(unitMeasureField)
+        .bind(Component::getUnitMeasureType, Component::setUnitMeasureType);
+    grid.addColumn(Component::getUnitMeasureType)
+        .setHeader(i18n("measure"))
+        .setAutoWidth(true)
+        .setEditorComponent(unitMeasureField);
+
+    IntegerField costField = new IntegerField();
+    costField.setWidthFull();
+    binder.forField(costField)
+        .bind(Component::getCostPerUnit, Component::setCostPerUnit);
+    grid.addColumn(Component::getCostPerUnit)
+        .setHeader(i18n("cost"))
+        .setAutoWidth(true)
+        .setEditorComponent(costField);
+
+    IntegerField quantityField = new IntegerField();
+    quantityField.setWidthFull();
+    binder.forField(quantityField)
+        .bind(Component::getStockQuantity, Component::setStockQuantity);
+    grid.addColumn(Component::getStockQuantity)
+        .setHeader(i18n("quantity"))
+        .setAutoWidth(true)
+        .setEditorComponent(quantityField);
+
+    addStatusColumn(Component::getStatus);
   }
 
-  private Icon createStatusIcon(String status) {
-    return switch (status) {
-      case "Available" -> new Icon(VaadinIcon.CHECK);
-      case "Declined" -> new Icon(VaadinIcon.CLOSE);
-      case "Pending" -> new Icon(VaadinIcon.TIME_FORWARD);
-      default -> new Icon(VaadinIcon.QUESTION_CIRCLE);
-    };
-  }
 
+  private boolean matches(String field, String term) {
+    return field != null && field.toLowerCase().contains(term);
+  }
 }
+
