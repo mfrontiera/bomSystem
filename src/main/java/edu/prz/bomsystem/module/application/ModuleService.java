@@ -1,6 +1,8 @@
 package edu.prz.bomsystem.module.application;
 
+import edu.prz.bomsystem.component.domain.Component;
 import edu.prz.bomsystem.component.domain.Component.ComponentId;
+import edu.prz.bomsystem.component.domain.ComponentRepository;
 import edu.prz.bomsystem.module.domain.Module;
 import edu.prz.bomsystem.module.domain.Module.ModuleId;
 import edu.prz.bomsystem.module.domain.ModuleComponent;
@@ -18,6 +20,7 @@ public class ModuleService {
 
   private final ModuleRepository moduleRepository;
   private final ModuleComponentRepository moduleComponentRepository;
+  private final ComponentRepository componentRepository;
 
   @Transactional
   public Module createModule(String catalogId){
@@ -26,20 +29,28 @@ public class ModuleService {
   }
 
   @Transactional
-  public Optional<Module> addComponentToModule(ModuleId moduleid, ComponentId componentId, int quantity){
-    Optional<Module> module = moduleRepository.findById(moduleid.getId());
+  public Optional<Module> addComponentToModule(ModuleId moduleId, ComponentId componentId, int quantity) {
+    return moduleRepository.findById(moduleId.getId()).map(module -> {
+      boolean alreadyExists = module.getModuleComponentList().stream()
+          .anyMatch(mc -> mc.getComponent().getId().equals(componentId.getId()));
 
-    module.map(found -> {
-      val moduleComponent = found.getModuleComponentList().stream().filter(c -> c.getComponent() == componentId).findFirst();
-      if(moduleComponent.isEmpty()){
-        val moduleComponentCreated = ModuleComponent.builder().module(found).component(componentId).componentsQuantity(quantity).build();
-        moduleComponentRepository.save(moduleComponentCreated);
+      if (!alreadyExists) {
+        Component component = componentRepository.findById(componentId.getId())
+            .orElseThrow(() -> new IllegalArgumentException("Component not found"));
+
+        ModuleComponent moduleComponent = ModuleComponent.builder()
+            .module(module)
+            .component(component.getIdentity())
+            .componentsQuantity(quantity)
+            .build();
+
+        moduleComponentRepository.save(moduleComponent);
+        module.getModuleComponentList().add(moduleComponent);
       }
-      return moduleRepository.save(found);
-    });
 
-    return module;
+      return moduleRepository.save(module);
+    });
   }
 
+  }
 
-}

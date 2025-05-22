@@ -1,6 +1,7 @@
 package edu.prz.bomsystem.module.ui;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -59,6 +60,9 @@ public class ModuleEditableGridView extends BaseView {
           return null;
         }
     );
-    add(searchField,newEntityButton,removeEntityButton,moduleEditableGrid);
+
+    HorizontalLayout buttonLayout = new HorizontalLayout(searchField,newEntityButton,removeEntityButton);
+    add(buttonLayout,moduleEditableGrid);
   }
+
 }

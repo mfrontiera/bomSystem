@@ -46,7 +46,8 @@ public class MainLayout extends AppLayout implements I18nAware {
   private final transient AuthenticatedUserService authenticatedUserService;
   Map<String, VaadinIcon> menuEntries = Map.of(
       "components", VaadinIcon.DASHBOARD,
-      "modules", VaadinIcon.COG
+      "modules", VaadinIcon.COG,
+      "bons",VaadinIcon.NEWSPAPER
   );
 
   public MainLayout(AuthenticatedUserService authenticatedUserService){

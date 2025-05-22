@@ -9,6 +9,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import edu.prz.bomsystem.component.domain.Component;
 import edu.prz.bomsystem.foundation.ui.i18n.I18nAware;
 import edu.prz.bomsystem.foundation.ui.view.EditableGrid;
+import edu.prz.bomsystem.mbom.domain.Bon;
 import edu.prz.bomsystem.module.domain.Module;
 
 public class ComponentEditableGrid extends EditableGrid<Component> implements I18nAware {
@@ -23,6 +24,11 @@ public class ComponentEditableGrid extends EditableGrid<Component> implements I1
 
   @Override
   public com.vaadin.flow.component.Component getItemDetailsContent(Module module) {
+    return null;
+  }
+
+  @Override
+  public com.vaadin.flow.component.Component getItemDetailsContent(Bon bon) {
     return null;
   }
 

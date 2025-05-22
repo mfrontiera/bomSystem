@@ -16,6 +16,7 @@ import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import edu.prz.bomsystem.foundation.ui.i18n.I18nAware;
+import edu.prz.bomsystem.mbom.domain.Bon;
 import edu.prz.bomsystem.module.domain.Module;
 import java.util.List;
 import java.util.Objects;
@@ -231,4 +232,6 @@ public abstract class EditableGrid<T> extends BasicGrid<T> implements I18nAware 
 
 
   public abstract com.vaadin.flow.component.Component getItemDetailsContent(Module module);
+
+  public abstract com.vaadin.flow.component.Component getItemDetailsContent(Bon bon);
 }
