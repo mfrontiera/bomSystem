@@ -1,5 +1,7 @@
 package edu.prz.bomsystem.module.ui;
 
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.router.Route;
@@ -12,9 +14,10 @@ import edu.prz.bomsystem.module.domain.ModuleRepository;
 import jakarta.annotation.security.PermitAll;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.math3.random.RandomDataGenerator;
 
 @PermitAll
-@Route("m")
+@Route("modules")
 public class ModuleEditableGridView extends BaseView {
 
   private final ModuleRepository moduleRepository;
@@ -39,6 +42,23 @@ public class ModuleEditableGridView extends BaseView {
   }
 
   private void setupLayout(){
-    add(moduleEditableGrid);
+    TextField searchField = moduleEditableGrid.createSearchField(List.of(
+        Module::getName,
+        Module::getCatalogId,
+        Module::getType
+    ));
+
+    Button newEntityButton = moduleEditableGrid.addNewButton(
+        unused -> moduleService.createModule(
+            "DD" + new RandomDataGenerator().nextLong(0, 10000))
+    );
+
+    Button removeEntityButton = moduleEditableGrid.addDeleteButton(
+        delete -> {
+          moduleRepository.deleteAll();
+          return null;
+        }
+    );
+    add(searchField,newEntityButton,removeEntityButton,moduleEditableGrid);
   }
 }

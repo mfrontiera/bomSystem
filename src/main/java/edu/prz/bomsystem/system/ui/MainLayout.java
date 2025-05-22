@@ -10,8 +10,12 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Layout;
 import com.vaadin.flow.server.StreamResource;
@@ -30,6 +34,7 @@ import edu.prz.bomsystem.authority.domain.user.AuthenticatedUserService;
 import edu.prz.bomsystem.authority.domain.user.User;
 import edu.prz.bomsystem.foundation.ui.i18n.I18nAware;
 import java.io.ByteArrayInputStream;
+import java.util.Map;
 import java.util.Optional;
 import lombok.val;
 import org.vaadin.lineawesome.LineAwesomeIcon;
@@ -39,6 +44,10 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
 public class MainLayout extends AppLayout implements I18nAware {
 
   private final transient AuthenticatedUserService authenticatedUserService;
+  Map<String, VaadinIcon> menuEntries = Map.of(
+      "components", VaadinIcon.DASHBOARD,
+      "modules", VaadinIcon.COG
+  );
 
   public MainLayout(AuthenticatedUserService authenticatedUserService){
     this.authenticatedUserService = authenticatedUserService;
@@ -49,7 +58,7 @@ public class MainLayout extends AppLayout implements I18nAware {
   private Component createHeaderContent(){
     Header header = new Header();
     header.addClassNames(BoxSizing.BORDER, Display.FLEX, FlexDirection.COLUMN, Width.FULL);
-    header.add(createStatusBar(),createSystemMenu("components"));
+    header.add(createStatusBar(),createSystemMenu(menuEntries));
     return header;
   }
 
@@ -100,13 +109,22 @@ public class MainLayout extends AppLayout implements I18nAware {
     return layout;
   }
 
-  private Component createSystemMenu(String... localizations) {
+  private Component createSystemMenu(Map<String, VaadinIcon> entries) {
     MenuBar menu = new MenuBar();
     menu.setThemeName("tertiary");
 
-    for (String localization : localizations) {
-      MenuItem menuItem = menu.addItem(createMenuIcon());
-      menuItem.add(i18n(localization));
+    for (Map.Entry<String, VaadinIcon> entry : entries.entrySet()) {
+      String localization = entry.getKey();
+      VaadinIcon iconType = entry.getValue();
+
+      Icon icon = new Icon(iconType);
+      Span label = new Span(i18n(localization));
+
+      HorizontalLayout content = new HorizontalLayout(icon, label);
+      content.setSpacing(true);
+      content.setAlignItems(FlexComponent.Alignment.CENTER);
+
+      MenuItem menuItem = menu.addItem(content);
       menuItem.addClassNames(Display.FLEX, Gap.XSMALL, Height.MEDIUM,
           AlignItems.CENTER, Padding.Horizontal.SMALL, TextColor.BODY);
 
