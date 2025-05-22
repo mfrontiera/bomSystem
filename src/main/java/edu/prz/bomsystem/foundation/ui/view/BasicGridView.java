@@ -48,6 +48,12 @@ public abstract class BasicGridView<T> extends BaseView {
     setupRootLayout();
   }
 
+  public void setItems(List<T> newItems) {
+    items.clear();
+    items.addAll(newItems);
+    dataProvider.refreshAll();
+  }
+
   private void setupRootLayout() {
     HorizontalLayout searchAndButtonsLayout = new HorizontalLayout();
     searchAndButtonsLayout.add(searchField, newEntityButton, removeEntityButton);
@@ -178,6 +184,6 @@ public abstract class BasicGridView<T> extends BaseView {
         grid.getEditor().editItem(record);
       });
       return editButton;
-    }).setAutoWidth(true).setEditorComponent(actions).setFlexGrow(0);
+    }).setAutoWidth(true).setEditorComponent(actions).setFlexGrow(1);
   }
 }

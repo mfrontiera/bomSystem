@@ -73,7 +73,7 @@ public class Module extends BaseEntity<Long> {
   String status = "Pending";
 
   int stockQuantity;
-
+  
   @OneToMany(mappedBy = "module", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
   List<ModuleComponent> moduleComponentList;
 }

@@ -70,4 +70,6 @@ public class Component extends BaseEntity<Long> {
 
   int costPerUnit;
   int stockQuantity;
+
+
 }

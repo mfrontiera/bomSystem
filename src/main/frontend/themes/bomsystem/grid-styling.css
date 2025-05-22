@@ -1,0 +1,13 @@
+vaadin-grid::part(high-rating) {
+  background-color: rgba(243, 210, 8, 0.3);
+
+}
+
+vaadin-grid::part(low-rating) {
+  background-color: rgba(238, 11, 11, 0.3);
+
+}
+
+vaadin-grid::part(font-weight-bold) {
+  font-weight: bold;
+}
