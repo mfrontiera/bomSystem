@@ -39,13 +39,11 @@ public class BonEditableGrid extends EditableGrid<Bon> {
   }
 
   private void setupLayout(){
-    // Pole katalogowe (bez edytora – tylko odczyt)
     addColumn(Bon::getCatalogId)
         .setHeader(i18n("catalogId"))
         .setAutoWidth(true)
         .setSortable(true);
 
-// Pole nazwy (edytowalne)
     TextField nameField = new TextField();
     nameField.setWidthFull();
     binder.forField(nameField).bind(Bon::getName, Bon::setName);
@@ -55,7 +53,6 @@ public class BonEditableGrid extends EditableGrid<Bon> {
         .setEditorComponent(nameField)
         .setSortable(true);
 
-// Pole opisu (edytowalne, z ograniczeniem długości)
     TextArea descriptionField = new TextArea();
     descriptionField.setWidthFull();
     descriptionField.setMaxLength(150);
